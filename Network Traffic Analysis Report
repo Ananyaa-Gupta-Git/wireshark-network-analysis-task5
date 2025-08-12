@@ -1,0 +1,216 @@
+# Network Traffic Analysis Report
+
+## Executive Summary
+This report presents the findings from capturing and analyzing network traffic using Wireshark over a comprehensive monitoring period. The analysis identified multiple network protocols including ARP, DNS, HTTP, ICMP, TCP, UDP, QUIC, and TLS, providing insights into modern network communication patterns and security practices.
+
+## Methodology
+
+### Capture Setup
+- **Tool**: Wireshark 4.4.8
+- **Network Interface**: Wi-Fi adapter
+- **Duration**: Extended monitoring session
+- **Date/Time**: December 8, 2025
+- **Local Device IP**: 192.168.1.54
+- **Gateway IP**: 192.168.1.1
+
+### Traffic Generation Activities
+During the capture period, the following activities were performed to generate network traffic:
+1. Web browsing to various HTTPS websites
+2. DNS resolution for multiple domains
+3. Background system updates and services
+4. Network discovery and ARP broadcasts
+5. Secure connections to Microsoft and Google services
+
+## Protocol Analysis
+
+### 1. Address Resolution Protocol (ARP)
+- **Packet Count**: 35+ packets
+- **Percentage of Total Traffic**: ~3%
+- **Description**: Protocol used for mapping IP addresses to MAC addresses within the local network
+- **Key Observations**: 
+  - Frequent ARP broadcasts from Samsung device (MAC: f5:26:...)
+  - Regular "Who has" queries for IP 192.168.1.1 (gateway)
+  - Normal network discovery behavior indicating active devices on subnet
+
+### 2. Domain Name System (DNS)
+- **Packet Count**: 80+ packets
+- **Percentage of Total Traffic**: ~7%
+- **Description**: Protocol responsible for translating domain names to IP addresses
+- **Key Observations**:
+  - Queries to major services: Google (ads.yieldmo.com, googleapis.com)
+  - Microsoft domains (cs.dds.microsoft.com, um.simpli.fi)
+  - CDN and advertising networks (rtb.gumgum.com, ssl.gstatic.com)
+  - WhatsApp and social media domains indicating mobile app activity
+
+### 3. Transmission Control Protocol (TCP)
+- **Packet Count**: 1000+ packets
+- **Percentage of Total Traffic**: ~80%
+- **Description**: Reliable, connection-oriented transport protocol ensuring data delivery
+- **Key Observations**:
+  - Extensive use of port 443 (HTTPS) for secure web communications
+  - Three-way handshake patterns (SYN, SYN-ACK, ACK)
+  - Connection teardown sequences with FIN and RST flags
+  - Large data transfers with TCP reassembly for applications
+
+### 4. Transport Layer Security (TLS)
+- **Packet Count**: 200+ packets
+- **Percentage of Total Traffic**: ~15%
+- **Description**: Cryptographic protocol providing secure communication over networks
+- **Key Observations**:
+  - TLS v1.2 handshakes with certificate exchanges
+  - Encrypted handshake messages ensuring secure connections
+  - Server certificates and key exchanges for identity verification
+  - Application data encryption for privacy protection
+
+### 5. HyperText Transfer Protocol (HTTP)
+- **Packet Count**: 4 packets
+- **Percentage of Total Traffic**: <1%
+- **Description**: Application layer protocol for web communication (unencrypted)
+- **Key Observations**:
+  - Minimal unencrypted HTTP traffic (good security practice)
+  - GET requests for certificate-related resources
+  - Most web traffic encrypted via HTTPS instead
+
+### 6. Internet Control Message Protocol (ICMP)
+- **Packet Count**: 9 packets
+- **Percentage of Total Traffic**: <1%
+- **Description**: Network layer protocol for error reporting and network diagnostics
+- **Key Observations**:
+  - "Destination unreachable" messages indicating blocked or unavailable services
+  - Network diagnostic information for troubleshooting
+  - Port unreachable errors suggesting filtered connections
+
+### 7. Quick UDP Internet Connections (QUIC)
+- **Packet Count**: 50+ packets
+- **Percentage of Total Traffic**: ~4%
+- **Description**: Modern transport protocol developed by Google for faster web connections
+- **Key Observations**:
+  - Initial connection packets with crypto parameters
+  - Protected payload transmission (KP0 encryption)
+  - Faster connection establishment compared to TCP+TLS
+  - Used primarily for Google services and YouTube
+
+### 8. User Datagram Protocol (UDP)
+- **Packet Count**: 30+ packets
+- **Percentage of Total Traffic**: ~3%
+- **Description**: Fast, connectionless transport protocol for real-time applications
+- **Key Observations**:
+  - DNS queries over port 53
+  - Microsoft service communications
+  - Network time synchronization
+  - Streaming and real-time application support
+
+## Traffic Patterns and Insights
+
+### Communication Flow
+- **Local Device IP**: 192.168.1.54
+- **Router/Gateway IP**: 192.168.1.1
+- **Most Active External IPs**: 
+  - 172.64.149.23 (Cloudflare CDN)
+  - 20.72.205.209 (Microsoft Services)
+  - 172.217.167.195 (Google Services)
+  - 141.94.175.218 (Various web services)
+- **Common Ports Used**: 
+  - Port 443 (HTTPS) - Dominant secure web traffic
+  - Port 53 (DNS) - Domain name resolution
+  - Port 80 (HTTP) - Minimal basic web traffic
+  - Port 1353 (Custom applications)
+
+### Interesting Findings
+1. **Dominant HTTPS Traffic**: Over 90% of web traffic is encrypted via TLS/SSL
+2. **Active DNS Resolution**: Constant domain name lookups for web services and CDNs
+3. **QUIC Protocol Presence**: Modern Google protocol for faster web connections
+4. **Samsung Device Activity**: Regular ARP broadcasts from Samsung device on network
+5. **Microsoft Services Integration**: Significant traffic to Microsoft servers for updates and services
+6. **Minimal HTTP Usage**: Very little unencrypted web traffic, indicating good security practices
+7. **CDN Usage**: Heavy reliance on content delivery networks for performance
+
+## Wireshark Filters Used
+
+The following filters were applied during analysis:
+```
+arp           # Address Resolution Protocol packets
+dns           # Domain Name System queries and responses  
+http          # Hypertext Transfer Protocol (unencrypted web)
+icmp          # Internet Control Message Protocol (ping, errors)
+tcp           # Transmission Control Protocol (reliable transport)
+udp           # User Datagram Protocol (fast transport)
+quic          # Quick UDP Internet Connections (Google protocol)
+tls           # Transport Layer Security (encrypted connections)
+```
+
+## Security Observations
+
+### Positive Security Practices
+- Predominantly encrypted HTTPS connections (443/tcp)
+- Modern TLS v1.2 implementation with proper certificate validation
+- Minimal unencrypted HTTP traffic
+- Use of modern protocols like QUIC for enhanced security
+
+### Points of Interest
+- Multiple connections to advertising and tracking networks
+- Background system services creating regular network activity
+- DNS queries revealing browsing patterns and application usage
+- Some ICMP unreachable messages indicating network filtering
+
+### Potential Concerns
+- Extensive tracking domain queries (ads, analytics)
+- Multiple third-party service connections
+- Background data collection by various applications
+
+## Statistics Summary
+
+| Protocol | Packet Count | Percentage | Key Purpose |
+|----------|-------------|------------|-------------|
+| TCP | 1000+ | ~80% | Reliable web connections and data transfer |
+| TLS | 200+ | ~15% | Encrypted secure communications |
+| DNS | 80+ | ~7% | Domain name resolution |
+| QUIC | 50+ | ~4% | Fast Google protocol connections |
+| ARP | 35+ | ~3% | Local network device discovery |
+| UDP | 30+ | ~3% | Fast data transmission |
+| ICMP | 9 | <1% | Network diagnostics and error reporting |
+| HTTP | 4 | <1% | Unencrypted web traffic |
+| **Total** | **~1400+** | **100%** | **Mixed network activity** |
+
+## Conclusions
+
+### Key Learnings
+1. **Protocol Diversity**: Modern networks utilize multiple protocols working in harmony
+2. **Security First**: Encryption is now the default for web communications
+3. **DNS Criticality**: Constant DNS resolution is essential for all internet services
+4. **Performance Optimization**: New protocols like QUIC improve connection speeds
+5. **Background Activity**: Significant network traffic occurs from background services
+
+### Network Behavior Analysis
+- The captured traffic demonstrates typical modern internet usage patterns
+- Heavy reliance on encrypted communications shows good security awareness
+- Multiple CDN connections indicate performance-optimized web browsing
+- Background services generate substantial ongoing network activity
+
+### Practical Applications
+This analysis demonstrates how network monitoring tools like Wireshark can be used for:
+- **Security Auditing**: Identifying unencrypted communications and potential threats
+- **Performance Analysis**: Understanding bandwidth usage and connection patterns
+- **Troubleshooting**: Diagnosing network connectivity and protocol issues
+- **Compliance Monitoring**: Ensuring proper encryption and security protocols
+
+## Recommendations for Further Study
+1. **Deep Packet Inspection**: Analyze payload contents of unencrypted protocols
+2. **Time-based Analysis**: Compare traffic patterns across different times of day
+3. **Application Correlation**: Map network traffic to specific applications
+4. **Performance Metrics**: Measure connection establishment times and throughput
+5. **Security Assessment**: Identify potential privacy concerns and data leakage
+6. **Protocol Evolution**: Study adoption rates of newer protocols like HTTP/3 and QUIC
+
+## Technical Insights
+- **Connection Establishment**: Observed proper TCP three-way handshakes
+- **TLS Negotiation**: Modern cipher suites and certificate validation
+- **Flow Control**: Proper TCP windowing and acknowledgment patterns
+- **Error Handling**: ICMP messages providing network diagnostic information
+
+---
+
+**Analyst**: Ananyaa Gupta  
+**Date**: 12/08/2025  
+**Task**: Cybersecurity Internship Task 5 - Network Traffic Analysis  
+**Tool Version**: Wireshark 4.4.8
